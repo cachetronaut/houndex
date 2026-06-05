@@ -74,6 +74,11 @@ all = [
 [project.scripts]
 houndex = "houndex_cli.cli:main"
 
+[project.urls]
+Homepage = "https://github.com/cachetronaut/houndex"
+Repository = "https://github.com/cachetronaut/houndex"
+Issues = "https://github.com/cachetronaut/houndex/issues"
+
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
