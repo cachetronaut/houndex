@@ -1,5 +1,10 @@
 # Houndex
 
+<p align="center">
+  <img src="docs/assets/logo.png" alt="Houndex logo" width="240">
+</p>
+
+
 A storage-decoupled, last-mile RAG framework: typed output envelopes, tenant-aware evidence stores, citation verification, and pluggable storage adapters.
 
 Houndex is a primitive with TypeScript and Python implementations maintained in one public repository. The shared repo keeps the public contract, fixtures, issues, and release history aligned across languages.
