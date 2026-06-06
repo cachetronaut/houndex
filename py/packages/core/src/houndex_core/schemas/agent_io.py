@@ -54,6 +54,7 @@ class ReconciliationResult(BaseModel):
 # Traffic-light grounding verdict for one assertion against its cited evidence:
 # ``green`` fully grounded, ``yellow`` partially, ``red`` unsupported.
 Verdict = Literal["red", "yellow", "green"]
+VERDICT_VALUES: tuple[Verdict, ...] = ("red", "yellow", "green")
 
 
 class CitationVerdict(BaseModel):
