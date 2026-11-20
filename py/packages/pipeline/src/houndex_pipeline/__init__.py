@@ -21,6 +21,7 @@ from .orchestrator import (
 )
 from .source_tier import SourceTierClassifier, SourceTierRubric
 from .source_tier_loader import load_source_tier_classifier
+from .verification import TraceVerification, verify_trace
 
 __all__ = [
     "EnrichmentEdge",
@@ -35,6 +36,7 @@ __all__ = [
     "SinkResult",
     "SourceTierClassifier",
     "SourceTierRubric",
+    "TraceVerification",
     "UrlBearing",
     "chunk_text",
     "compute_enrichment",
@@ -44,4 +46,5 @@ __all__ = [
     "load_source_tier_classifier",
     "process_pages",
     "run_ingestion",
+    "verify_trace",
 ]
