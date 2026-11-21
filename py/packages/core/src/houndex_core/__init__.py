@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from .canonical_json import canonical_json
+from .fusion import DEFAULT_RRF_K, FusedHit, reciprocal_rank_fusion
 from .hash import sha256_hex
 from .identity import ClaimId, compute_claim_id
 from .models import EmbeddingConfig, ModelConfig, ModelRef, ModelRouting
@@ -105,6 +106,9 @@ from .tenant import (
 )
 
 __all__ = [
+    "DEFAULT_RRF_K",
+    "FusedHit",
+    "reciprocal_rank_fusion",
     "CATEGORY_VALUES",
     "CONFIDENCE_VALUES",
     "CURATION_STATUS_VALUES",

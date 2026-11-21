@@ -9,6 +9,7 @@ from houndex_core import (
     CONFIDENCE_VALUES,
     CURATION_STATUS_VALUES,
     DECISION_TO_EDGE_KIND,
+    DEFAULT_RRF_K,
     EDGE_KIND_VALUES,
     ENGINE_VERSION,
     ENVELOPE_SCHEMA_URL,
@@ -42,6 +43,7 @@ from houndex_core import (
     ExtractedClaim,
     ExtractedClaims,
     FailRunInput,
+    FusedHit,
     GetClaimInput,
     GraphNode,
     KbAction,
@@ -91,6 +93,7 @@ from houndex_core import (
     extract_domain,
     parse_tenant_context,
     parse_tenant_id,
+    reciprocal_rank_fusion,
     run_node_id,
     set_trace_sink,
     sha256_hex,
@@ -108,6 +111,9 @@ except PackageNotFoundError:  # pragma: no cover - editable source tree fallback
     __version__ = "0.0.0"
 
 __all__ = [
+    "DEFAULT_RRF_K",
+    "FusedHit",
+    "reciprocal_rank_fusion",
     "CATEGORY_VALUES",
     "CONFIDENCE_VALUES",
     "CURATION_STATUS_VALUES",
