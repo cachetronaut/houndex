@@ -27,6 +27,31 @@ on the machine that runs it.
 - Calls run on a worker thread, so disk I/O never blocks the event loop. Run status
   changes are single atomic statements, safe alongside other connections.
 
+## Search
+
+`SqliteSearchIndex` keeps documents (an id, named text fields, an ordering key and an optional
+vector) in a SQLite file or in memory and searches them:
+
+- `lexical(query, limit=, offset=, ties=)`: FTS5 full-text search. Each query word matches as a
+  prefix, results rank by bm25 over all fields, and ties break by id or by newest `order` first.
+- `similar(query_vector, limit=, minimum=, measure=)`: vector search, by cosine or dot product.
+
+`fuzzy_matches` (typo-tolerant name matching) and `rank_by_similarity` work on documents you
+already hold. Merge any ranked lists with `houndex_core.reciprocal_rank_fusion`, which keeps each
+list's rank for every hit.
+
+```python
+from houndex_core import reciprocal_rank_fusion
+from houndex_storage_sqlite import SearchDocument, SqliteSearchIndex
+
+index = SqliteSearchIndex(fields=("title", "body"))
+index.add([SearchDocument("a", {"title": "Charmander", "body": "fire lizard"}, vector=[1, 0])])
+fused = reciprocal_rank_fusion({
+    "lexical": index.lexical("fire"),
+    "vector": [identifier for identifier, _ in index.similar([1, 0])],
+})
+```
+
 ## Usage
 
 ```python
