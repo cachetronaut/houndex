@@ -30,7 +30,8 @@ from typing import Literal
 
 _TOKENS = re.compile(r"\w+", re.UNICODE)
 _FIELD = re.compile(r"[a-z][a-z0-9_]*")
-_RESERVED = {"document_id", "document_order"}
+# The index's own columns, plus names FTS5 reserves or uses for hidden columns.
+_RESERVED = {"document_id", "document_order", "documents", "rank", "rowid", "oid", "_rowid_"}
 
 Measure = Literal["dot", "cosine"]
 
@@ -131,8 +132,10 @@ class SqliteSearchIndex:
             or any(not _FIELD.fullmatch(name) or name in _RESERVED for name in names)
         ):
             raise ValueError("fields must be distinct lower-case identifiers")
+        if path.startswith("file:"):
+            raise ValueError("pass a filesystem path or ':memory:', not a SQLite URI")
         self.fields = tuple(names)
-        if path != ":memory:" and not path.startswith("file:"):
+        if path != ":memory:":
             # A new index file is readable and writable by its owner only.
             os.close(os.open(path, os.O_CREAT | os.O_WRONLY, 0o600))
         self._db = sqlite3.connect(path, check_same_thread=check_same_thread)

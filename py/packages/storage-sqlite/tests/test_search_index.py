@@ -62,9 +62,24 @@ def test_adding_an_id_again_replaces_it_and_remove_and_clear_forget() -> None:
 
 
 def test_fields_must_be_distinct_identifiers() -> None:
-    for fields in ((), ("Title",), ("a", "a"), ("document_id",), ("x y",)):
+    for fields in (
+        (),
+        ("Title",),
+        ("a", "a"),
+        ("document_id",),
+        ("x y",),
+        ("rank",),
+        ("rowid",),
+        ("documents",),
+    ):
         with pytest.raises(ValueError):
             SqliteSearchIndex(fields=fields)
+
+
+def test_sqlite_uris_are_refused_so_files_stay_owner_only(tmp_path) -> None:
+    with pytest.raises(ValueError):
+        SqliteSearchIndex(f"file:{tmp_path / 'search.sqlite'}")
+    assert not (tmp_path / "search.sqlite").exists()
 
 
 def test_vectors_are_searchable_and_survive_reopening(tmp_path) -> None:
