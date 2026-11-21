@@ -148,13 +148,22 @@ class SqliteSearchIndex:
             "CREATE TABLE IF NOT EXISTS document_vectors ("
             " id TEXT PRIMARY KEY, vector BLOB NOT NULL);"
         )
+        # Whether any vector may be held, so documents without vectors skip that table.
+        self._vectors = (
+            self._db.execute("SELECT 1 FROM document_vectors LIMIT 1").fetchone() is not None
+        )
 
     def add(self, documents: Iterable[SearchDocument]) -> None:
-        """Index documents, replacing any already held under the same id."""
+        """Index documents in one transaction, replacing any already held under the same id.
+        A field the index doesn't have is an error, never silently dropped."""
         placeholders = ", ".join("?" for _ in range(len(self.fields) + 1))
         columns = ", ".join(f'"{name}"' for name in self.fields)
+        known = set(self.fields)
         with self._db:
             for document in documents:
+                unknown = set(document.fields) - known
+                if unknown:
+                    raise ValueError(f"unknown fields: {', '.join(sorted(unknown))}")
                 self._remove(document.id)
                 cursor = self._db.execute(
                     f"INSERT INTO documents (document_order, {columns}) VALUES ({placeholders})",
@@ -165,12 +174,16 @@ class SqliteSearchIndex:
                     (document.id, cursor.lastrowid),
                 )
                 if document.vector is not None:
+                    self._vectors = True
                     self._db.execute(
                         "INSERT INTO document_vectors (id, vector) VALUES (?, ?)",
                         (document.id, array("f", document.vector).tobytes()),
                     )
 
     def remove(self, ids: Iterable[str]) -> None:
+        """Forget the documents with these ids (a list of ids, never a single id string)."""
+        if isinstance(ids, str):
+            raise TypeError("pass a list of ids, not a single id string")
         with self._db:
             for identifier in ids:
                 self._remove(identifier)
@@ -182,7 +195,8 @@ class SqliteSearchIndex:
         if row is not None:
             self._db.execute("DELETE FROM documents WHERE rowid = ?", (row[0],))
             self._db.execute("DELETE FROM document_ids WHERE id = ?", (identifier,))
-        self._db.execute("DELETE FROM document_vectors WHERE id = ?", (identifier,))
+        if self._vectors:
+            self._db.execute("DELETE FROM document_vectors WHERE id = ?", (identifier,))
 
     def clear(self) -> None:
         with self._db:

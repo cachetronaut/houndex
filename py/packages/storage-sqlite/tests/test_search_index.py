@@ -57,6 +57,12 @@ def test_adding_an_id_again_replaces_it_and_remove_and_clear_forget() -> None:
     assert set(index.lexical("fire")) == {"a", "b", "c"}
     index.remove(["a"])
     assert set(index.lexical("fire")) == {"b", "c"}
+    with pytest.raises(TypeError):
+        index.remove("bc")  # a single id string would otherwise remove ids "b" and "c"
+    assert set(index.lexical("fire")) == {"b", "c"}
+    with pytest.raises(ValueError):
+        index.add([SearchDocument("d", {"Title": "misnamed"})])
+    assert index.lexical("misnamed") == []
     index.clear()
     assert index.lexical("fire") == []
 
