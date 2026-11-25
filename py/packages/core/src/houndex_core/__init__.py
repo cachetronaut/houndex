@@ -22,6 +22,8 @@ from .providers import (
     Scraper,
     SearchProvider,
     SearchResult,
+    VersionedEmbedder,
+    embedder_version,
 )
 from .schemas import (
     CATEGORY_VALUES,
@@ -186,11 +188,13 @@ __all__ = [
     "UpsertSourceInput",
     "Verdict",
     "VerificationOverrideInput",
+    "VersionedEmbedder",
     "canonical_json",
     "canonicalize_url",
     "category_node_id",
     "compute_claim_id",
     "edge_idempotency_key",
+    "embedder_version",
     "emit_trace",
     "extract_domain",
     "parse_tenant_context",

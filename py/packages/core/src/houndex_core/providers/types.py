@@ -49,6 +49,20 @@ class Embedder(Protocol):
 
 
 @runtime_checkable
+class VersionedEmbedder(Embedder, Protocol):
+    """An embedder that names the model version behind its vectors, so callers
+    can drop cached vectors when the model changes."""
+
+    async def version(self) -> str: ...
+
+
+async def embedder_version(embedder: Embedder) -> str | None:
+    if isinstance(embedder, VersionedEmbedder):
+        return await embedder.version()
+    return None
+
+
+@runtime_checkable
 class Reranker(Protocol):
     async def rerank(
         self, query: str, documents: Sequence[str], top_n: int | None = None

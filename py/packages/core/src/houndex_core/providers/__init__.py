@@ -6,6 +6,8 @@ from .types import (
     Scraper,
     SearchProvider,
     SearchResult,
+    VersionedEmbedder,
+    embedder_version,
 )
 
 __all__ = [
@@ -16,4 +18,6 @@ __all__ = [
     "Scraper",
     "SearchProvider",
     "SearchResult",
+    "VersionedEmbedder",
+    "embedder_version",
 ]

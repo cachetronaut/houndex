@@ -30,6 +30,12 @@ export interface Scraper {
 export interface Embedder {
   readonly dimension: number;
   embed(texts: readonly string[]): Promise<number[][]>;
+  /** The model version behind the vectors, so callers can drop cached vectors when it changes. */
+  version?(): Promise<string>;
+}
+
+export async function embedderVersion(embedder: Embedder): Promise<string | undefined> {
+  return embedder.version ? embedder.version() : undefined;
 }
 
 export interface Reranker {
